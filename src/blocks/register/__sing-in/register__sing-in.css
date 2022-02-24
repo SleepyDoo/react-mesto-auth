@@ -1,0 +1,9 @@
+.register__sing-in {
+  text-decoration: none;
+  color: white;
+  transition: opacity 0.3s;
+}
+
+.register__sing-in:hover {
+  opacity: 0.6;
+}

@@ -1,0 +1,11 @@
+.register__input {
+  height: 27px;
+  border: none;
+  background-color: black;
+  border-bottom: 2px solid #cccccc;
+  color: white;
+}
+
+.register__input:first-of-type {
+  margin-bottom: 30px;
+}

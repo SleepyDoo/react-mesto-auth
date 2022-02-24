@@ -1,0 +1,19 @@
+.element__like-button {
+  border: none;
+  outline: none;
+  background-color: white;
+  background-image: url("../../../images/like-button.svg");
+  width: 22px;
+  height: 19px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.element__like-button:hover {
+  opacity: .5;
+}
+
+.element__like-button:active{
+  background-image: url('../../../images/Union.svg');
+  opacity: 1;
+}
