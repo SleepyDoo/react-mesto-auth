@@ -2,22 +2,19 @@ import logoPath from "../images/logo.svg";
 import { Link, useLocation } from "react-router-dom";
 import React from "react";
 function Header(props) {
-  let location = useLocation();
-  function label() {
-    if (location.pathname === "/sign-in") {
-      return (
+  const location = useLocation();
+  return (
+    <header className="header">
+      <img className="header__logo" src={logoPath} alt="Логотип" />
+      {location.pathname === "/sign-in" ? (
         <Link to="/sign-up" className="header__link">
           Регистрация
         </Link>
-      );
-    } else if (location.pathname === "/sign-up") {
-      return (
+      ) : location.pathname === "/sign-up" ? (
         <Link to="/sign-in" className="header__link">
           Войти
         </Link>
-      );
-    } else if (location.pathname === "/") {
-      return (
+      ) : location.pathname === "/" ? (
         <div className="header__container">
           <p className="header__paragraph">{props.email}</p>
           <Link
@@ -28,13 +25,9 @@ function Header(props) {
             Выйти
           </Link>
         </div>
-      );
-    }
-  }
-  return (
-    <header className="header">
-      <img className="header__logo" src={logoPath} alt="Логотип" />
-      {label()}
+      ) : (
+        ""
+      )}
     </header>
   );
 }

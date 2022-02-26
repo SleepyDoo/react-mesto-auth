@@ -1,4 +1,3 @@
-import registerImage from "../images/registerOK.svg";
 export default function InfoToolTip(props) {
   return (
     <div className={`popup ${props.isOpen ? "popup_opened" : ""}`}>
@@ -9,7 +8,7 @@ export default function InfoToolTip(props) {
           onClick={props.onClose}
         />
         <div className="popup__tip-container">
-          <img className="popup__symbol" src={props.info.img} />
+          <img className="popup__symbol" src={props.info.img} alt="status" />
           <p className="popup__tip-paragraph">{props.info.text}</p>
         </div>
       </div>

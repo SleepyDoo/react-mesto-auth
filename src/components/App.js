@@ -1,4 +1,3 @@
-import "../index.css";
 import Header from "./Header.js";
 import Main from "./Main";
 import ImagePopup from "./ImagePopup";
@@ -29,6 +28,7 @@ function App() {
   const [isToolTipOpen, setIsToolTipOpen] = React.useState(false);
   const [toolTipInfo, setToolTipInfo] = React.useState({});
   const [email, setEmail] = React.useState("");
+  const [cards, setCards] = React.useState([]);
 
   const authOk = { img: authOkImg, text: "Вы успешно зарегистрировались!" };
   // prettier-ignore
@@ -37,26 +37,37 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
-    api
-      .getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (isLoggedIn) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([user, cards]) => {
+          setCurrentUser(user);
+          setCards(cards);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [isLoggedIn]);
 
-    auth
-      .checkToken(localStorage.getItem("jwt"))
-      .then((res) => {
-        setIsLoggedIn(true);
-        setEmail(res.data.email);
-        history.push("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  React.useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      auth
+        .checkToken(token)
+        .then((res) => {
+          if (res) {
+            setIsLoggedIn(true);
+            setEmail(res.data.email);
+            history.push("/");
+          } else {
+            localStorage.removeItem("jwt");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [history]);
 
   function handleLogOut() {
     setIsLoggedIn(false);
@@ -68,6 +79,7 @@ function App() {
       .register(data)
       .then(() => {
         setToolTipInfo(authOk);
+        history.push("/sign-in");
       })
       .catch((err) => {
         setToolTipInfo(authBad);
@@ -82,12 +94,11 @@ function App() {
     auth
       .signIn(data)
       .then((data) => {
-        setIsLoggedIn(true);
-        history.push("/");
-
         if (data.token) {
           localStorage.setItem("jwt", data.token);
         }
+        setIsLoggedIn(true);
+        history.push("/");
       })
       .catch((err) => {
         setToolTipInfo(authBad);
@@ -145,19 +156,6 @@ function App() {
   }
 
   // cards
-
-  const [cards, setCards] = React.useState([]);
-
-  React.useEffect(() => {
-    api
-      .getInitialCards()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -222,7 +220,7 @@ function App() {
               exact
               path="/"
             />
-            <Route>
+            <Route path="*">
               {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
             </Route>
             <Main />
@@ -239,8 +237,6 @@ function App() {
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
           />
-
-          <PopupWithForm name="delete-popup" title="Вы уверены?" />
 
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
