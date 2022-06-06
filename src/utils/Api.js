@@ -97,9 +97,8 @@ class Api {
 
 }
 
-const api = new Api('https://mesto.nomoreparties.co/v1/cohort-32',
+const api = new Api('sleepydoo.mesto.nomoredomains.xyz',
   {
-    authorization: 'e018c56f-d4b3-4bdf-9daa-134c345b8c23',
     'Content-Type': 'application/json'
   });
 
