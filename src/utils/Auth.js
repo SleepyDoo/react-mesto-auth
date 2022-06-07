@@ -47,6 +47,6 @@ class Auth {
   }
 }
 
-const auth = new Auth("https://auth.nomoreparties.co");
+const auth = new Auth("https://api.sleepydoo.mesto.nomoredomains.xyz");
 
 export default auth;

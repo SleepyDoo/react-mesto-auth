@@ -97,7 +97,7 @@ class Api {
 
 }
 
-const api = new Api('sleepydoo.mesto.nomoredomains.xyz',
+const api = new Api('https://api.sleepydoo.mesto.nomoredomains.xyz',
   {
     'Content-Type': 'application/json'
   });
