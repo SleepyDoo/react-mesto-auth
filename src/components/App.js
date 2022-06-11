@@ -35,24 +35,25 @@ function App() {
 
   const history = useHistory();
 
+  const jwt = localStorage.getItem('jwt');
+
   React.useEffect(() => {
     if (isLoggedIn) {
-      Promise.all([api.getUserInfo(), api.getInitialCards()])
+      Promise.all([api.getUserInfo(jwt), api.getInitialCards(jwt)])
         .then(([user, cards]) => {
-          setCurrentUser(user);
-          setCards(cards);
+          setCurrentUser(user.data);
+          setCards(cards.data);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, jwt]);
 
   React.useEffect(() => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
+    if (jwt) {
       auth
-        .checkToken(token)
+        .checkToken(jwt)
         .then((res) => {
           if (res) {
             setIsLoggedIn(true);
@@ -66,7 +67,7 @@ function App() {
           console.log(err);
         });
     }
-  }, [history]);
+  }, [history, jwt]);
 
   function handleLogOut() {
     setIsLoggedIn(false);
@@ -93,8 +94,9 @@ function App() {
     auth
       .signIn(data)
       .then((data) => {
-        if (data.token) {
-          localStorage.setItem("jwt", data.token);
+        console.log(data.data);
+        if (data.data) {
+          localStorage.setItem("jwt", data.data);
         }
         setIsLoggedIn(true);
         history.push("/");
@@ -124,9 +126,9 @@ function App() {
 
   function handleUpdateAvatar(data) {
     api
-      .setAvatar(data)
+      .setAvatar(data, jwt)
       .then((newData) => {
-        setCurrentUser(newData);
+        setCurrentUser(newData.data);
         setEditAvatarPopupOpen(false);
       })
       .catch((err) => {
@@ -136,9 +138,9 @@ function App() {
 
   function handleUpdateUser(data) {
     api
-      .editProfileBio(data)
+      .editProfileBio(data, jwt)
       .then((newData) => {
-        setCurrentUser(newData);
+        setCurrentUser(newData.data);
         setEditProfilePopupOpen(false);
       })
       .catch((err) => {
@@ -157,14 +159,22 @@ function App() {
   // cards
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
+    const isLiked = card.likes.some((i) => i === currentUser._id);
+    console.log(cards);
+    console.log(isLiked);
     api
       .changeLikeCardStatus(card._id, isLiked)
       .then((newCard) => {
-        setCards((cards) =>
-          cards.map((c) => (c._id === card._id ? newCard : c))
-        );
+        const newCardsList = cards.map((c) => {
+          //console.log(c);
+          if (c._id === card._id) {
+            return newCard.data 
+          } else {
+            return c;
+          }
+        })
+        console.log(newCardsList);
+        setCards(newCardsList);
       })
       .catch((err) => {
         console.log(err);
@@ -173,7 +183,7 @@ function App() {
 
   function handleCardDelete(card) {
     api
-      .removeCard(card._id)
+      .removeCard(card._id, jwt)
       .then(() => {
         setCards(cards.filter((elem) => elem !== card));
       })
@@ -184,9 +194,9 @@ function App() {
 
   function handleAddPlaceSubmit(data) {
     api
-      .addNewCard(data)
+      .addNewCard(data, jwt)
       .then((newCard) => {
-        setCards([newCard, ...cards]);
+        setCards([newCard.data, ...cards]);
         setAddPlacePopupOpen(false);
       })
       .catch((err) => {

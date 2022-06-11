@@ -5,13 +5,17 @@ export default function Card(props) {
 
   const currentUser = React.useContext(CurrentUserContext);
 
-  const isOwn = props.card.owner._id === currentUser._id;
+  //console.log(props.card);
+
+  const isOwn = props.card.owner === currentUser._id;
 
   const cardDeleteButtonClassName = (
     `element__delete-icon ${isOwn ? '' : 'element__delete-icon_hidden'}`
   );
 
-  const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+  const isLiked = props.card.likes.some(i => i === currentUser._id);
+
+  //console.log(isLiked);
 
   const cardLikeButtonClassName = `element__like-button ${isLiked ? 'element__like-button_active' : ''}`;
 

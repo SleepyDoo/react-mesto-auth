@@ -1,7 +1,6 @@
 class Api {
-  constructor(url, headers) {
+  constructor(url) {
     this._url = url;
-    this._headers = headers;
   }
 
   _getResult(res) {
@@ -11,26 +10,36 @@ class Api {
     return res.json();
   }
 
-  getUserInfo() {
+  getUserInfo(jwt) {
+    console.log('serv' + localStorage.getItem('jwt'));
     return fetch(`${this._url}/users/me`, {
       method: 'GET',
-      headers: this._headers
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      }
     })
       .then(this._getResult)
   }
 
-  getInitialCards() {
+  getInitialCards(jwt) {
     return fetch(`${this._url}/cards`, {
       method: 'GET',
-      headers: this._headers
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      }
     })
       .then(this._getResult)
   }
 
-  editProfileBio(data) {
+  editProfileBio(data, jwt) {
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      },
       body: JSON.stringify({
         name: data.name,
         about: data.about
@@ -39,10 +48,13 @@ class Api {
       .then(this._getResult)
   }
 
-  addNewCard(data) {
+  addNewCard(data, jwt) {
     return fetch(`${this._url}/cards`, {
       method: 'POST',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      },
       body: JSON.stringify({
         name: data.name,
         link: data.link
@@ -51,34 +63,46 @@ class Api {
       .then(this._getResult)
   }
 
-  removeCard(id) {
+  removeCard(id, jwt) {
     return fetch(`${this._url}/cards/${id}`, {
       method: 'DELETE',
-      headers: this._headers
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      }
     })
       .then(this._getResult)
   }
 
-  setLike(id) {
+  setLike(id, jwt) {
     return fetch(`${this._url}/cards/${id}/likes`, {
       method: 'PUT',
-      headers: this._headers
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      }
     })
       .then(this._getResult)
   }
 
-  unlike(id) {
+  unlike(id, jwt) {
     return fetch(`${this._url}/cards/${id}/likes`, {
       method: 'DELETE',
-      headers: this._headers
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      }
     })
       .then(this._getResult)
   }
 
-  setAvatar(data) {
+  setAvatar(data, jwt) {
     return fetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${jwt}`,
+      },
       body: JSON.stringify({
         avatar: data.avatar
       })
@@ -88,19 +112,15 @@ class Api {
 
   changeLikeCardStatus(id, isLiked) {
     if (isLiked) {
-      return this.unlike(id);
+      return this.unlike(id, localStorage.getItem('jwt'));
     }
     else {
-      return this.setLike(id);
+      return this.setLike(id, localStorage.getItem('jwt'));
     }
   }
 
 }
 
-const api = new Api('https://api.sleepydoo.mesto.nomoredomains.xyz',
-  {
-    'Content-Type': 'application/json',
-    'authorization': `Bearer ${localStorage.getItem('jwt')}`,
-  });
+const api = new Api('https://api.sleepydoo.mesto.nomoredomains.xyz');
 
 export default api;
