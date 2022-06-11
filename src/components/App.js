@@ -1,7 +1,6 @@
 import Header from "./Header.js";
 import Main from "./Main";
 import ImagePopup from "./ImagePopup";
-import PopupWithForm from "./PopupWithForm";
 import React from "react";
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Footer from "./Footer";

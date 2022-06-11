@@ -99,7 +99,8 @@ class Api {
 
 const api = new Api('https://api.sleepydoo.mesto.nomoredomains.xyz',
   {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'authorization': `Bearer ${localStorage.getItem('jwt')}`,
   });
 
 export default api;
