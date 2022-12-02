@@ -11,7 +11,7 @@ function Main(props) {
     <main>
       <section className="profile">
         <div className="profile__main">
-          <img className="profile__avatar" src={currentUser.avatar} alt="Аватар профиля" />
+            <img className="profile__avatar" src={currentUser.avatar} alt="Аватар профиля" />
           <div className="profile__avatar-edit-button" onClick={props.onEditAvatar} />
           <div className="profile__profile-info">
             <h1 className="profile__name">{currentUser.name}</h1>
